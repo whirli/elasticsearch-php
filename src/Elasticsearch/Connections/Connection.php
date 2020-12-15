@@ -207,7 +207,7 @@ class Connection implements ConnectionInterface
         if (isset($this->connectionParams['client']['port_in_header']) && $this->connectionParams['client']['port_in_header']) {
             $host .= ':' . $this->port;
         }
-        
+
         $request = [
             'http_method' => $method,
             'scheme'      => $this->transportSchema,
@@ -342,7 +342,7 @@ class Connection implements ConnectionInterface
         if (isset($params) === true && !empty($params)) {
             array_walk(
                 $params,
-                function (&$value, &$key) {
+                function (&$value) {
                     if ($value === true) {
                         $value = 'true';
                     } elseif ($value === false) {
@@ -421,7 +421,7 @@ class Connection implements ConnectionInterface
     public function logRequestFail(array $request, array $response, \Exception $exception): void
     {
         $this->log->debug('Request Body', array($request['body']));
-        
+
         $this->log->warning(
             'Request Failure:',
             array(
@@ -695,7 +695,7 @@ class Connection implements ConnectionInterface
                 // added json_encode to convert into a string
                 return new $errorClass(json_encode($response['body']), (int) $response['status']);
             }
-            
+
             // 2.0 structured exceptions
             if (is_array($error['error']) && array_key_exists('reason', $error['error']) === true) {
                 // Try to use root cause first (only grabs the first root cause)
@@ -715,7 +715,7 @@ class Connection implements ConnectionInterface
             // <2.0 semi-structured exceptions
             // added json_encode to convert into a string
             $original = new $errorClass(json_encode($response['body']), $response['status']);
-            
+
             $errorEncoded = $error['error'];
             if (is_array($errorEncoded)) {
                 $errorEncoded = json_encode($errorEncoded);
